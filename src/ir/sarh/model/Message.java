@@ -7,13 +7,14 @@ import java.util.Set;
 
 public class Message implements Serializable {
 
-    private static final long serialVersionUID = 1827324698736604798L;
+    private static final long serialVersionUID = -6176810702283314133L;
 
     private String username;
     private String password;
     private RequestType type;
     private String courseName;
     private Set<Course> courses;
+    private String errorMessage;
 
     private Message(String username, String password, RequestType type, String courseName, Set<Course> courses) {
         this.username = username;
@@ -21,6 +22,11 @@ public class Message implements Serializable {
         this.type = type;
         this.courseName = courseName;
         this.courses = courses;
+    }
+
+    private Message(String errorMessage) {
+        this.errorMessage = errorMessage;
+        this.type = RequestType.ERROR_OR_INFORMATION;
     }
 
     public static Message loginMessageFrom(String username, String password) {
@@ -31,12 +37,12 @@ public class Message implements Serializable {
         return new Message(username, null, RequestType.LOGOUT, null, Collections.emptySet());
     }
 
-    public static Message courseListMessageFrom(String username) {
-        return new Message(username, null, RequestType.COURSE_LIST, null, Collections.emptySet());
+    public static Message courseListMessageFrom(String username, Set<Course> courses) {
+        return new Message(username, null, RequestType.COURSE_LIST, null, courses);
     }
 
-    public static Message myCourseMessageFrom(String username) {
-        return new Message(username, null, RequestType.MY_COURSE, null, Collections.emptySet());
+    public static Message myCourseMessageFrom(String username, Set<Course> courses) {
+        return new Message(username, null, RequestType.MY_COURSE, null, courses);
     }
 
     public static Message dropCourseMessageFrom(String username, String courseName) {
@@ -45,6 +51,10 @@ public class Message implements Serializable {
 
     public static Message takeCourseMessageFrom(String username, String courseName) {
         return new Message(username, null, RequestType.TAKE, courseName, Collections.emptySet());
+    }
+
+    public static Message errorMessageFrom(String error) {
+        return new Message(error);
     }
 
     public static long getSerialVersionUID() {
@@ -69,6 +79,10 @@ public class Message implements Serializable {
 
     public Set<Course> getCourses() {
         return courses;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     @Override

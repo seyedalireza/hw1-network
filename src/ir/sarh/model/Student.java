@@ -11,6 +11,7 @@ public class Student implements Serializable {
 
     private String username;
     private String password;
+    private int numberOfRemoved;
     private Set<Course> courses;
 
     public Student(String username, String password) {
@@ -42,11 +43,19 @@ public class Student implements Serializable {
         return Collections.unmodifiableSet(courses);
     }
 
-    public boolean addCourse(Course course) {
-        if (hasOverlapWithCourses(course)) {
+    public synchronized boolean addCourse(Course course) {
+        if (hasOverlapWithCourses(course) || courses.contains(course)) {
             return false;
         }
         return courses.add(course);
+    }
+
+    public synchronized boolean removeCourse(Course course) {
+        if (numberOfRemoved >= 3) {
+            return false;
+        }
+        numberOfRemoved++;
+        return courses.remove(course);
     }
 
     private boolean hasOverlapWithCourses(Course course) {

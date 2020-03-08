@@ -61,18 +61,26 @@ public class Course implements Serializable {
         this.endTime = endTime;
     }
 
+    public synchronized void enrolled() {
+        this.numberOfEnrolled++;
+    }
+
+    public synchronized void leaved() {
+        this.numberOfEnrolled--;
+    }
+
     @Override
     public String toString() {
-        return name + "\t" + capacity + "\t" + numberOfEnrolled + "\t" + startTime + "-" + endTime + "\n";
+        return name + "\t" + capacity + "\t" + numberOfEnrolled + "\t" + startTime + "-" + endTime;
     }
 
     public boolean hasOverlap(Course course) {
         if (this.startTime == course.startTime) {
-            return false;
+            return true;
         } else if (this.startTime > course.startTime) {
-            return this.startTime >= course.endTime;
+            return this.startTime < course.endTime;
         } else {
-            return this.endTime <= course.startTime;
+            return this.endTime > course.startTime;
         }
     }
 
